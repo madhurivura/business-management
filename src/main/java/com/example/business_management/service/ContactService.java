@@ -1,7 +1,8 @@
 package com.example.business_management.service;
 
-import com.example.business_management.dto.ContactResponse;
-import com.example.business_management.dto.ContactUpdateRequest;
+import com.example.business_management.dto.contactsDto.ContactResponse;
+import com.example.business_management.dto.contactsDto.ContactUpdateRequest;
+import com.example.business_management.dto.DeletedDto;
 import com.example.business_management.entity.Account;
 import com.example.business_management.entity.Contact;
 import com.example.business_management.exception.ResourceNotFoundException;
@@ -15,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +27,10 @@ public class ContactService {
 
     // Pagination + search (only contacts of logged-in account)
     public Page<ContactResponse> getContacts(String search, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+        Sort s=Sort.by("id").descending().and(Sort.by("email").descending());
+
+        Pageable pageable = PageRequest.of(page, size, s);
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
 
@@ -88,7 +91,7 @@ public class ContactService {
         return toResponse(contact);
     }
 
-    public String deleteContact(Long id) {
+    public DeletedDto deleteContact(Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
@@ -104,10 +107,10 @@ public class ContactService {
 
         contact.setActive(false);
         contactRepo.save(contact);
-        return "Contact deleted successfully";
+        return DeletedDto.builder()
+                .message("Contact deleted successfully")
+                .build();
     }
-
-
 
     private ContactResponse toResponse(Contact c) {
         return new ContactResponse(

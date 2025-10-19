@@ -1,7 +1,8 @@
 package com.example.business_management.controller;
 
-import com.example.business_management.dto.ContactResponse;
-import com.example.business_management.dto.ContactUpdateRequest;
+import com.example.business_management.dto.contactsDto.ContactResponse;
+import com.example.business_management.dto.contactsDto.ContactUpdateRequest;
+import com.example.business_management.dto.DeletedDto;
 import com.example.business_management.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -36,7 +37,7 @@ public class ContactController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String softDeleteContact(@PathVariable Long id, Authentication authentication) {
+    public DeletedDto softDeleteContact(@PathVariable Long id, Authentication authentication) {
         return contactService.deleteContact(id);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.business_management.dto;
+package com.example.business_management.dto.loginDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class AccountRegisterRequest {
-    private String name;
+public class LoginRequest {
     private String email;
     private String password;
-    private String phone;
-    private String address;
 }

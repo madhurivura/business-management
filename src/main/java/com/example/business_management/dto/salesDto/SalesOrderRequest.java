@@ -1,4 +1,4 @@
-package com.example.business_management.dto;
+package com.example.business_management.dto.salesDto;
 
 import lombok.*;
 import java.util.List;

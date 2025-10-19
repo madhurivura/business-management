@@ -1,7 +1,8 @@
 package com.example.business_management.controller;
 
-import com.example.business_management.dto.ProductRequest;
-import com.example.business_management.dto.ProductResponse;
+import com.example.business_management.dto.DeletedDto;
+import com.example.business_management.dto.productsDto.ProductRequest;
+import com.example.business_management.dto.productsDto.ProductResponse;
 import com.example.business_management.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+    public DeletedDto deleteProduct(@PathVariable Long id) {
         return productService.deleteProduct(id);
     }
 }

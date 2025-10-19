@@ -1,13 +1,12 @@
 package com.example.business_management.controller;
 
-import com.example.business_management.dto.AccountResponse;
-import com.example.business_management.dto.AccountUpdateRequest;
+import com.example.business_management.dto.DeletedDto;
+import com.example.business_management.dto.accountsDto.AccountResponse;
+import com.example.business_management.dto.accountsDto.AccountUpdateRequest;
 import com.example.business_management.service.AccountService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String softDeleteAccount(@PathVariable Long id, Authentication authentication) {
+    public DeletedDto softDeleteAccount(@PathVariable Long id, Authentication authentication) {
         return accountService.deleteAccount(id);
     }
 }

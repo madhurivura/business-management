@@ -1,12 +1,13 @@
 package com.example.business_management.service;
 
-import com.example.business_management.dto.*;
+import com.example.business_management.dto.salesDto.SalesOrderItemResponse;
+import com.example.business_management.dto.salesDto.SalesOrderRequest;
+import com.example.business_management.dto.salesDto.SalesOrderResponse;
 import com.example.business_management.entity.*;
 import com.example.business_management.exception.ResourceNotFoundException;
 import com.example.business_management.exception.UnauthorizedException;
 import com.example.business_management.repo.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.config.annotation.web.oauth2.resourceserver.OpaqueTokenDsl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,9 @@ public class SalesOrderService {
             Product product = productRepo.findById(i.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
+            product.setStock(product.getStock()-i.getQuantity());
+            productRepo.save(product);
+
             SalesOrderItem item = new SalesOrderItem();
             item.setProduct(product);
             item.setQuantity(i.getQuantity());
@@ -65,7 +69,6 @@ public class SalesOrderService {
             item.setSalesOrder(order);
             return item;
         }).collect(Collectors.toList());
-
 
         double subtotal = items.stream().mapToDouble(i -> i.getPrice() * i.getQuantity()).sum();
         double tax = subtotal * 0.1;

@@ -31,11 +31,8 @@ public class Account {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String phone;
-
-    @Column(nullable = false)
-    private String address;
 
     private boolean isActive = true;
 

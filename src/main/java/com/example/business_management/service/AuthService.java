@@ -1,6 +1,13 @@
 package com.example.business_management.service;
 
-import com.example.business_management.dto.*;
+import com.example.business_management.dto.accountsDto.AccountRegisterRequest;
+import com.example.business_management.dto.accountsDto.AccountRegisterResponse;
+import com.example.business_management.dto.contactsDto.ContactRegisterRequest;
+import com.example.business_management.dto.contactsDto.ContactRegisterResponse;
+import com.example.business_management.dto.customerDto.CustomerRegisterRequest;
+import com.example.business_management.dto.customerDto.CustomerRegisterResponse;
+import com.example.business_management.dto.loginDto.LoginRequest;
+import com.example.business_management.dto.loginDto.LoginResponse;
 import com.example.business_management.entity.Account;
 import com.example.business_management.entity.Contact;
 import com.example.business_management.entity.Customer;
@@ -39,7 +46,6 @@ public class AuthService {
         account.setEmail(request.getEmail());
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         account.setPhone(request.getPhone());
-        account.setAddress(request.getAddress());
         account.setAccountNumber("ACC-" + (1000+accountRepo.count()+1));
 
         accountRepo.save(account);

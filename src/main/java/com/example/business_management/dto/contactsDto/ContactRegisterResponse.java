@@ -1,4 +1,4 @@
-package com.example.business_management.dto;
+package com.example.business_management.dto.contactsDto;
 
 import lombok.*;
 

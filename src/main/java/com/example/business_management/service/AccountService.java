@@ -1,7 +1,8 @@
 package com.example.business_management.service;
 
-import com.example.business_management.dto.AccountResponse;
-import com.example.business_management.dto.AccountUpdateRequest;
+import com.example.business_management.dto.DeletedDto;
+import com.example.business_management.dto.accountsDto.AccountResponse;
+import com.example.business_management.dto.accountsDto.AccountUpdateRequest;
 import com.example.business_management.entity.Account;
 import com.example.business_management.exception.ResourceNotFoundException;
 import com.example.business_management.exception.UnauthorizedException;
@@ -25,6 +26,8 @@ public class AccountService {
     public List<AccountResponse> getAccounts(String search, int page, int size) {
         Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
 
+        Sort s=Sort.by("id").descending().and(Sort.by("email").descending());
+
         if(authentication1 == null){
             throw new UnauthorizedException("User not authenticated");
         }
@@ -35,7 +38,9 @@ public class AccountService {
             throw new UnauthorizedException("Access denied");
         }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+
+
+        Pageable pageable = PageRequest.of(page, size, s);
 
         Page<Account> accounts;
         if (search.isEmpty()) {
@@ -97,14 +102,13 @@ public class AccountService {
         if (req.getName() != null) account.setName(req.getName());
         if (req.getEmail() != null) account.setEmail(req.getEmail());
         if (req.getPhone() != null) account.setPhone(req.getPhone());
-        if (req.getAddress() != null) account.setAddress(req.getAddress());
 
         accountRepo.save(loggedAccount);
         return toResponse(loggedAccount);
     }
 
     @Transactional
-    public String deleteAccount(Long id) {
+    public DeletedDto deleteAccount(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -131,7 +135,9 @@ public class AccountService {
 
         accountRepo.save(account);
 
-        return "Account deleted successfully";
+        return DeletedDto.builder()
+                .message("Deleted account successfully")
+                .build();
     }
 
     private AccountResponse toResponse(Account account) {
@@ -141,7 +147,6 @@ public class AccountService {
                 account.getName(),
                 account.getEmail(),
                 account.getPhone(),
-                account.getAddress(),
                 account.isActive()
         );
     }

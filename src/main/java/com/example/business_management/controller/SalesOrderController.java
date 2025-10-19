@@ -1,6 +1,7 @@
 package com.example.business_management.controller;
 
-import com.example.business_management.dto.*;
+import com.example.business_management.dto.salesDto.SalesOrderRequest;
+import com.example.business_management.dto.salesDto.SalesOrderResponse;
 import com.example.business_management.service.SalesOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

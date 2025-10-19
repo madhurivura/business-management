@@ -1,7 +1,8 @@
 package com.example.business_management.service;
 
-import com.example.business_management.dto.ProductRequest;
-import com.example.business_management.dto.ProductResponse;
+import com.example.business_management.dto.DeletedDto;
+import com.example.business_management.dto.productsDto.ProductRequest;
+import com.example.business_management.dto.productsDto.ProductResponse;
 import com.example.business_management.entity.Account;
 import com.example.business_management.entity.Product;
 import com.example.business_management.exception.ResourceNotFoundException;
@@ -120,7 +121,7 @@ public class ProductService {
         return toResponse(product);
     }
 
-    public String deleteProduct(Long id) {
+    public DeletedDto deleteProduct(Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
@@ -140,7 +141,9 @@ public class ProductService {
 
         product.setActive(false);
         productRepo.save(product);
-        return "Product soft deleted successfully";
+        return DeletedDto.builder()
+                .message("Product soft deleted successfully")
+                .build();
     }
 
     private ProductResponse toResponse(Product p) {

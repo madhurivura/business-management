@@ -20,6 +20,8 @@ import com.example.business_management.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -78,8 +80,12 @@ public class AuthService {
 
 
     public LoginResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        }catch (Exception ex){
+            throw new ResourceNotFoundException("Invalid email or password");
+        }
 
         Optional<Account> accountOpt = accountRepo.findByEmail(request.getEmail());
         if (accountOpt.isPresent()) {
@@ -122,7 +128,9 @@ public class AuthService {
         return new CustomerRegisterResponse(customer.getId(), "ROLE_CUSTOMER", "registered", customer.getCustomerCode());
     }
 
-    public Object getMe(String email) {
+    public Object getMe() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
         Optional<Account> accountOpt = accountRepo.findByEmail(email);
         if (accountOpt.isPresent()) return accountOpt.get();
 

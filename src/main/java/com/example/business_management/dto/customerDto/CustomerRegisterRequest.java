@@ -16,7 +16,7 @@ public class CustomerRegisterRequest {
     private String email;
 
     @NotBlank(message = "Password cannot be blank")
-    @Pattern(regexp = "^[0-9]{10}$", message = "Password must be 10 digits")
+    @Pattern(regexp = "^[0-9]{8}$", message = "Password must be 8 digits")
     private String password;
 
     private String address;

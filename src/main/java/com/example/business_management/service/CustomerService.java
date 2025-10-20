@@ -6,6 +6,7 @@ import com.example.business_management.dto.customerDto.UpdateCustDto;
 import com.example.business_management.entity.Account;
 import com.example.business_management.entity.Customer;
 import com.example.business_management.exception.ResourceNotFoundException;
+import com.example.business_management.exception.UnauthorizedException;
 import com.example.business_management.repo.AccountRepo;
 import com.example.business_management.repo.CustomerRepo;
 import lombok.RequiredArgsConstructor;
@@ -65,21 +66,18 @@ public class CustomerService {
     /**
      * Update customer
      * Customer can update self
-     * Account owner can update any
      */
     public UpdateCustDto updateCustomer(Long id, UpdateCustDto dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
-        Account account = accountRepo.findByEmailAndIsActiveTrue(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
-
         Customer customer = customerRepo.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
-        if (!customer.getEmail().equals(email) && !account.getEmail().equals(email)) {
-            throw new SecurityException("Access denied");
+        if (!customer.getEmail().equals(email)) {
+            throw new UnauthorizedException("Access denied");
         }
+
 
         if(dto.getName()!=null) customer.setName(dto.getName());
         if(dto.getEmail()!=null) customer.setEmail(dto.getEmail());
@@ -96,19 +94,17 @@ public class CustomerService {
 
     /**
      * Soft delete customer
-     * Only self or account owner
+     * Only self
      */
     public DeletedDto deleteCustomer(Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
-        Account account = accountRepo.findByEmailAndIsActiveTrue(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         Customer customer = customerRepo.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
-        if (!customer.getEmail().equals(email) && !account.getEmail().equals(email)) {
+        if (!customer.getEmail().equals(email)) {
             throw new SecurityException("Access denied");
         }
 

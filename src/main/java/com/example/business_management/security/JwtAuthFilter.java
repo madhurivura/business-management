@@ -32,8 +32,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String email;
 
         String path = request.getServletPath();
-        if (path.startsWith("/auth/")) {
-            filterChain.doFilter(request, response); // skip JWT check
+        if (path.equals("/auth/login") ||
+                path.startsWith("/auth/register-") ||
+                path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-ui")) {
+            filterChain.doFilter(request, response);
             return;
         }
 

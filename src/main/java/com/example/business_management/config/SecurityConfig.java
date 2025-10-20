@@ -1,5 +1,7 @@
-package com.example.business_management.security;
+package com.example.business_management.config;
 
+import com.example.business_management.security.CustomUserDetailsService;
+import com.example.business_management.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +32,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())

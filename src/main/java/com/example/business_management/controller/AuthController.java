@@ -43,8 +43,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public Object getMe(Authentication authentication) {
-        String email = authentication.getName();
-        return authService.getMe(email);
+        return authService.getMe();
     }
 }
 

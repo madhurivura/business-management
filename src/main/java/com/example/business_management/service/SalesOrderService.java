@@ -30,11 +30,11 @@ public class SalesOrderService {
     public SalesOrderResponse createOrder(SalesOrderRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        Account account = accountRepo.findById(request.getAccountId())
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepo.findByIdAndIsActiveTrue(request.getAccountId())
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found or inactive"));
 
         if (request.getItems() == null || request.getItems().isEmpty()) {
-            throw new RuntimeException("Order must contain at least one item to proceed");
+            throw new ResourceNotFoundException("Order must contain at least one item to proceed");
         }
 
 
@@ -57,7 +57,7 @@ public class SalesOrderService {
 
         List<SalesOrderItem> items = request.getItems().stream().map(i -> {
             Product product = productRepo.findById(i.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
             product.setStock(product.getStock()-i.getQuantity());
             productRepo.save(product);
@@ -97,7 +97,7 @@ public class SalesOrderService {
         }else if(contact.isPresent()){
             accId=contact.get().getAccount().getId();
         }else{
-            throw new UnauthorizedException("only admin or employees can view their respective orders");
+            throw new UnauthorizedException("only admin or employees of active accounts can view their respective orders");
         }
 
         return orderRepo.findByAccountId(accId).stream().map(this::toResponse).collect(Collectors.toList());

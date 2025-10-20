@@ -88,6 +88,8 @@ public class AccountService {
         }
 
 
+        Account account = accountRepo.findByIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         Account loggedAccount = accountRepo.findByIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new UnauthorizedException("Access denied"));
@@ -96,8 +98,7 @@ public class AccountService {
             throw new UnauthorizedException("You can only update your own account");
         }
 
-        Account account = accountRepo.findByIdAndIsActiveTrue(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
 
         if (req.getName() != null) account.setName(req.getName());
         if (req.getEmail() != null) account.setEmail(req.getEmail());

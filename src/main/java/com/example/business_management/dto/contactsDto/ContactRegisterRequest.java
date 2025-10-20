@@ -22,7 +22,7 @@ public class ContactRegisterRequest {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
-    @NotBlank(message = "Phonenumber cannot be blank")
+    @NotBlank(message = "Phone-number cannot be blank")
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must be 10 digits")
     private String phone;
 

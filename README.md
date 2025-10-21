@@ -26,7 +26,7 @@ It supports secure REST APIs, JWT authentication, pagination, and historical dat
 
 ###  2. Contact Management
 - CRUD operations for contacts linked to accounts.  
-- Maintain **one-to-many relationship** between accounts and contacts.  
+- Maintain **many-to-one relationship** between accounts and contacts.  
 - Validation and data integrity ensured.
 
 ###  3. Product Management (Soft Delete)

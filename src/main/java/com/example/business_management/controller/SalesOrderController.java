@@ -5,6 +5,7 @@ import com.example.business_management.dto.salesDto.SalesOrderRequest;
 import com.example.business_management.dto.salesDto.SalesOrderResponse;
 import com.example.business_management.service.SalesOrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,9 @@ public class SalesOrderController {
     }
 
     @GetMapping
-    public List<SalesOrderResponse> getAllOrders() {
-        return orderService.getAllOrders();
+    public List<SalesOrderResponse> getAllOrders(@RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
+        return orderService.getAllOrders(page, size);
     }
 
     @DeleteMapping("/{id}")

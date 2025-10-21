@@ -8,7 +8,12 @@ import com.example.business_management.entity.*;
 import com.example.business_management.exception.ResourceNotFoundException;
 import com.example.business_management.exception.UnauthorizedException;
 import com.example.business_management.repo.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +33,7 @@ public class SalesOrderService {
     private final ContactRepo contactRepo;
     private final CustomerRepo customerRepo;
 
+    @Transactional
     public SalesOrderResponse createOrder(SalesOrderRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -85,9 +91,14 @@ public class SalesOrderService {
         return toResponse(order);
     }
 
-    public List<SalesOrderResponse> getAllOrders() {
+    public List<SalesOrderResponse> getAllOrders(int page, int size) {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
+
+        Sort s = Sort.by("id").descending();
+
+        Pageable pageable = PageRequest.of(page, size, s);
 
 
         Optional<Account> account = accountRepo.findByEmailAndIsActiveTrue(email);
@@ -102,7 +113,9 @@ public class SalesOrderService {
             throw new UnauthorizedException("only admin or employees of active accounts can view their respective orders");
         }
 
-        return orderRepo.findByAccountIdAndIsActiveTrue(accId)
+        Page<SalesOrder> orders = orderRepo.findByAccountIdAndIsActiveTrue(accId, pageable);
+
+        return  orders
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());

@@ -25,7 +25,7 @@ public class ContactService {
     private final ContactRepo contactRepo;
     private final AccountRepo accountRepo;
 
-    // Pagination + search (only contacts of logged-in account)
+
     public Page<ContactResponse> getContacts(String search, int page, int size) {
         Sort s=Sort.by("id").descending().and(Sort.by("email").descending());
 

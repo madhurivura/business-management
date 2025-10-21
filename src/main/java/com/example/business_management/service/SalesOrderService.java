@@ -31,6 +31,7 @@ public class SalesOrderService {
     public SalesOrderResponse createOrder(SalesOrderRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
+
         Account acc = accountRepo.findByIdAndIsActiveTrue(request.getAccountId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found or unavailable"));
 

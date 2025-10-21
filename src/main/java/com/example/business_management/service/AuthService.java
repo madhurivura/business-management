@@ -131,13 +131,13 @@ public class AuthService {
     public Object getMe() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        Optional<Account> accountOpt = accountRepo.findByEmail(email);
+        Optional<Account> accountOpt = accountRepo.findByEmailAndIsActiveTrue(email);
         if (accountOpt.isPresent()) return accountOpt.get();
 
-        Optional<Contact> contactOpt = contactRepo.findByEmail(email);
+        Optional<Contact> contactOpt = contactRepo.findByEmailAndIsActive(email,true);
         if (contactOpt.isPresent()) return contactOpt.get();
 
-        throw new ResourceNotFoundException("User not found");
+        throw new ResourceNotFoundException("User not found or inactive");
     }
 
 }

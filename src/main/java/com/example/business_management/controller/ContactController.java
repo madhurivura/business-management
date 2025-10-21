@@ -31,13 +31,13 @@ public class ContactController {
         return contactService.getContactByIdForAdmin(id);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ContactResponse updateContact(@PathVariable Long id, @RequestBody ContactUpdateRequest contactUpdateRequest, Authentication authentication) {
         return contactService.updateContact(id, contactUpdateRequest);
     }
 
     @DeleteMapping("/delete/{id}")
-    public DeletedDto softDeleteContact(@PathVariable Long id, Authentication authentication) {
+    public DeletedDto deleteContact(@PathVariable Long id, Authentication authentication) {
         return contactService.deleteContact(id);
     }
 }

@@ -16,25 +16,22 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    // Get all customers with optional search
     @GetMapping
     public Page<CustDto> getCustomers(@RequestParam(required = false) String search, Pageable pageable) {
         return customerService.getCustomers(search, pageable);
     }
 
-    // Get customer by ID
     @GetMapping("/{id}")
     public CustDto getCustomer(@PathVariable Long id) {
         return customerService.getCustomerById(id);
     }
 
-    // Update customer
+
     @PutMapping("/{id}")
     public UpdateCustDto updateCustomer(@PathVariable Long id, @RequestBody UpdateCustDto dto) {
         return customerService.updateCustomer(id, dto);
     }
 
-    // Soft delete customer
     @DeleteMapping("/{id}")
     public DeletedDto deleteCustomer(@PathVariable Long id) {
         return customerService.deleteCustomer(id);

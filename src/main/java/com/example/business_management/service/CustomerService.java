@@ -29,7 +29,7 @@ public class CustomerService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
-        // Get logged-in account
+
         Account account = accountRepo.findByEmailAndIsActiveTrue(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 

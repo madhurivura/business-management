@@ -33,13 +33,13 @@ public class AccountController {
         return accountService.getAccountById(id);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public AccountResponse updateAccount(@PathVariable Long id, @RequestBody AccountUpdateRequest request, Authentication authentication) {
         return accountService.updateAccount(id, request);
     }
 
     @DeleteMapping("/delete/{id}")
-    public DeletedDto softDeleteAccount(@PathVariable Long id, Authentication authentication) {
+    public DeletedDto deleteAccount(@PathVariable Long id, Authentication authentication) {
         return accountService.deleteAccount(id);
     }
 }

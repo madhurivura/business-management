@@ -6,6 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SalesOrderRepo extends JpaRepository<SalesOrder, Long> {
-    List<SalesOrder> findByAccountId(Long accountId);
-    Optional<SalesOrder> findByIsActiveTrue();
+    List<SalesOrder> findByAccountIdAndIsActiveTrue(Long accountId);
+    Optional<SalesOrder> findByIdAndIsActiveTrue(Long id);
 }

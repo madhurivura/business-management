@@ -87,28 +87,28 @@ public class AuthService {
             throw new ResourceNotFoundException("Invalid email or password");
         }
 
-        Optional<Account> accountOpt = accountRepo.findByEmail(request.getEmail());
+        Optional<Account> accountOpt = accountRepo.findByEmailAndIsActiveTrue(request.getEmail());
         if (accountOpt.isPresent()) {
             Account acc = accountOpt.get();
             String token = jwtUtil.generateToken(acc.getEmail(), "ROLE_ADMIN");
             return new LoginResponse(token, acc.getId().toString(), "ROLE_ADMIN");
         }
 
-        Optional<Contact> contactOpt = contactRepo.findByEmail(request.getEmail());
+        Optional<Contact> contactOpt = contactRepo.findByEmailAndIsActive(request.getEmail(),true);
         if (contactOpt.isPresent()) {
             Contact c = contactOpt.get();
             String token = jwtUtil.generateToken(c.getEmail(), c.getRole());
             return new LoginResponse(token, c.getId().toString(), c.getRole());
         }
 
-        Optional<Customer> cust = customerRepo.findByEmail(request.getEmail());
+        Optional<Customer> cust = customerRepo.findByEmailAndIsActiveTrue(request.getEmail());
         if(cust.isPresent()){
             Customer customer = cust.get();
             String tkn = jwtUtil.generateToken(customer.getEmail(), "ROLE_CUSTOMER");
             return new LoginResponse(tkn, customer.getId().toString(),"ROLE_CUSTOMER");
         }
 
-        throw new ResourceNotFoundException("Invalid credentials");
+        throw new ResourceNotFoundException("Invalid credentials or inactive");
     }
 
     public CustomerRegisterResponse registerCustomer(CustomerRegisterRequest req) {

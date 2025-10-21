@@ -1,5 +1,6 @@
 package com.example.business_management.controller;
 
+import com.example.business_management.dto.DeletedDto;
 import com.example.business_management.dto.salesDto.SalesOrderRequest;
 import com.example.business_management.dto.salesDto.SalesOrderResponse;
 import com.example.business_management.service.SalesOrderService;
@@ -24,6 +25,11 @@ public class SalesOrderController {
     @GetMapping
     public List<SalesOrderResponse> getAllOrders() {
         return orderService.getAllOrders();
+    }
+
+    @DeleteMapping("/{id}")
+    public DeletedDto cancelOrder(@PathVariable Long id){
+        return orderService.cancelOrder(id);
     }
 
 

@@ -9,6 +9,7 @@ import com.example.business_management.exception.ResourceNotFoundException;
 import com.example.business_management.exception.UnauthorizedException;
 import com.example.business_management.repo.AccountRepo;
 import com.example.business_management.repo.CustomerRepo;
+import com.example.business_management.repo.SalesOrderRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ public class CustomerService {
 
     private final CustomerRepo customerRepo;
     private final AccountRepo accountRepo;
+    private final SalesOrderRepo orderRepo;
 
     public Page<CustDto> getCustomers(String search, Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -41,11 +43,7 @@ public class CustomerService {
         return customers.map(this::toDTO);
     }
 
-    /**
-     * Get customer by ID
-     * Admin / account owner can access any
-     * Customer can access only self
-     */
+
     public CustDto getCustomerById(Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -63,10 +61,7 @@ public class CustomerService {
         return toDTO(customer);
     }
 
-    /**
-     * Update customer
-     * Customer can update self
-     */
+
     public UpdateCustDto updateCustomer(Long id, UpdateCustDto dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -92,10 +87,7 @@ public class CustomerService {
                 .build();
     }
 
-    /**
-     * Soft delete customer
-     * Only self
-     */
+
     public DeletedDto deleteCustomer(Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();

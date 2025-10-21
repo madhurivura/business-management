@@ -12,14 +12,6 @@ import org.hibernate.validator.constraints.UniqueElements;
 @Data
 @Builder
 public class AccountRegisterRequest {
-//    @NotNull(message = "Name cannot be null")
-//    private String name;
-//    @Email(message = "Enter Proper Email")
-//    private String email;
-//    @Min()
-//    private String password;
-//    private String phone;
-//    private String address;
 
     @NotBlank(message = "Name cannot be blank")
     private String name;

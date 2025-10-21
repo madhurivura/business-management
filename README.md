@@ -1,125 +1,169 @@
-Business Management System 
+### **Business Management System**
 
-The Business Management System is a Spring Boot backend application that manages business accounts, contacts, products, and sales orders.
-It simulates a real-world business workflow with proper entity relationships, automated number/code generation, soft deletion, tax calculation, and clean REST APIs.
+A robust **Spring Boot** backend application to manage business accounts, contacts, products, and sales orders with auto-generated IDs, soft deletion, and tax calculations.
 
-1. Purpose of the Project
+---
 
-Manage business accounts and their linked contacts.
+##  Overview
 
-Manage products with auto-generated codes and soft delete functionality.
+This backend project provides a complete solution for business management, including modules for:
 
-Create and manage sales orders, including multiple products per order.
+- **Account Management**
+- **Contact Management**
+- **Product Management (with Soft Delete)**
+- **Sales Order Management (with Soft Delete)**
 
-Auto-generate unique account numbers, product codes, and order numbers.
+It supports secure REST APIs, JWT authentication, pagination, and historical data retention with soft delete.
 
-Calculate totals, taxes (18%), and final amounts for sales orders.
+---
 
-Provide CRUD operations for all entities through REST APIs.
+##  Core Modules
 
-Enable soft deletion so records are not permanently removed but marked inactive.
+###  1. Account Management
+- Full CRUD operations for business accounts.  
+- Auto-generate unique account numbers (`ACC-1001`, `ACC-1002`, …).  
+- Search accounts by name with pagination and sorting.
 
-Support search and pagination for large datasets.
+###  2. Contact Management
+- CRUD operations for contacts linked to accounts.  
+- Maintain **one-to-many relationship** between accounts and contacts.  
+- Validation and data integrity ensured.
 
-2. Core Modules
-a) Account Management
+###  3. Product Management (Soft Delete)
+- Create, update, and delete products.  
+- Auto-generate product codes (`PRD-1001`, `PRD-1002`, …).  
+- Implements **soft delete**: deleted products are inactive and cannot be used in new orders.  
+- Only active products are listed and available.
 
-Manage business accounts with full CRUD operations.
+###  4. Sales Order Management (Soft Delete)
+- Create sales orders with multiple products.  
+- Auto-generate order numbers (`SO-YYYYMMDD-0001`).  
+- Calculates:
+  - **Subtotal** (sum of item prices × quantities)  
+  - **Tax (18%)**  
+  - **Total amount (subtotal + tax)**
+- Only **customers** can create and cancel their own orders.  
+- Cancelled orders are **soft deleted**, not removed from the database.
 
-Auto-generate unique account numbers (ACC-1001, ACC-1002, …).
+---
 
-Search accounts by name with pagination and sorting.
+##  Workflow
 
-One-to-many relationship with contacts.
+1. **Account Creation** → Create new accounts with unique account numbers.  
+2. **Contact Management** → Add contacts linked to specific accounts.  
+3. **Product Management** → Manage product catalog with soft delete.  
+4. **Sales Orders** → Create orders with automatic tax and total calculation.  
+5. **Order Cancellation** → Customers can cancel their own orders (soft delete).  
+6. **Search & Pagination** → Available for all major entities (accounts, contacts, products, orders).
 
-b) Contact Management
+---
 
-Manage contacts linked to accounts (employees, clients, etc.).
+##  Technical Stack
 
-Full CRUD operations with validation.
+| Technology | Description |
+|-------------|-------------|
+| **Java 17+** | Core backend language |
+| **Spring Boot** | Framework for REST APIs and backend logic |
+| **Spring Data JPA** | ORM for database operations |
+| **MySQL** | Relational database |
+| **Spring Security + JWT** | Authentication and authorization |
+| **Lombok** | Reduces boilerplate code |
+| **Maven** | Build & dependency management |
+| **Spring Actuator** | Monitoring and app health endpoints |
 
-Inactive contacts are ignored in listings.
+---
 
-c) Product Management (Soft Delete)
+##  Installation & Setup
 
-Create, update, and manage products.
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/madhurivura/business-management.git
+cd business-management
+````
 
-Auto-generate product codes (PRD-1001, PRD-1002, …).
+### 2️⃣ Configure Database
 
-Soft delete: deleted products are marked inactive and cannot be used in new sales orders.
+Open `src/main/resources/application.properties` and update your MySQL credentials:
 
-d) Sales Order Management (Soft Delete)
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/business_management
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+spring.jpa.hibernate.ddl-auto=update
+```
 
-Create sales orders with multiple products.
+### 3️⃣ Build the Project
 
-Auto-generate order numbers (SO-YYYYMMDD-0001).
+```bash
+mvn clean install
+```
 
-Calculate:
+### 4️⃣ Run the Application
 
-Subtotal (sum of product price × quantity)
+```bash
+mvn spring-boot:run
+```
 
-Tax (18%)
+### 5️⃣ Access APIs
 
-Final total (subtotal + tax)
+Base URL → `http://localhost:8080/api/`
 
-Soft delete: cancelled orders remain in the database but marked inactive.
+---
 
-Only active products can be added to sales orders.
+##  API Endpoints
 
-3. Workflow
+| Module       | Endpoint            | Description                     |
+| ------------ | ------------------- | ------------------------------- |
+| Account      | `/api/accounts`     | Manage account CRUD operations  |
+| Contact      | `/api/contacts`     | Manage contacts for accounts    |
+| Product      | `/api/products`     | CRUD + Soft delete for products |
+| Sales Orders | `/api/sales-orders` | Create, view, and cancel orders |
 
-Account Creation
-Admin creates a new business account with auto-generated account number.
+🔹 All APIs support **pagination**, **sorting**, and **soft delete filtering**.
 
-Contact Management
-Contacts are added and linked to accounts.
+---
 
-Product Management
-Admin adds products with auto-generated codes. Soft delete ensures inactive products cannot be used in orders.
+Business Logic Highlights
 
-Sales Order Creation
-Users create sales orders by adding products.
-Totals, tax, and final amounts are automatically calculated.
+Auto-generated IDs for all major entities.
 
-Soft Delete Handling
-Inactive accounts, products, contacts, or orders remain in the database but are ignored in operations.
+Soft delete implemented using an isActive flag.
 
-Search & Pagination
-Large datasets (accounts, products, orders) can be queried efficiently with search and pagination.
+18% Tax Calculation for all sales orders.
 
-4. Technical Stack
-Technology	Description
-Java 17+	Backend programming language
-Spring Boot	Framework for REST APIs and backend logic
-Spring Data JPA	ORM for database interaction
-MySQL	Relational database
-Spring Security + JWT	Authentication and authorization
-Lombok	Reduces boilerplate code
-Maven	Dependency management and build tool
-5. Features
+Role-based access ensuring only customers can create/cancel orders.
 
-CRUD operations for accounts, contacts, products, and sales orders.
+Historical data preservation through soft delete.
 
-Auto-generated identifiers for accounts, products, and orders.
+Example Order Calculation
+{
+  "subtotal": 2776.0,
+  "tax": 277.6,
+  "total": 3053.6
+}
 
-Soft deletion to maintain historical data.
 
-Tax calculation for sales orders (18%).
+System applies 18% tax automatically.
 
-Search and pagination for large datasets.
+##  Monitoring with Actuator
 
-Secure REST APIs with JWT-based authentication.
+Spring Boot Actuator provides health and metrics endpoints:
 
-6. API Endpoints (Overview)
+| Endpoint            | Description               |
+| ------------------- | ------------------------- |
+| `/actuator/health`  | Application health status |
+| `/actuator/info`    | Basic app info            |
+| `/actuator/metrics` | Performance metrics       |
 
-/accounts – CRUD and search for accounts
+---
 
-/contacts – CRUD for contacts linked to accounts
+##  Developer Notes
 
-/products – CRUD and soft delete for products
+* Use `@Valid` for DTO validation
+* `@Max`, `@Min`, and `@NotNull` annotations for input rules
+* Soft delete implemented using `isActive` boolean field
+* Exception handling via `@ControllerAdvice`
 
-/sales-orders – CRUD, soft delete, and calculation of totals for sales orders
-
-Email notifications for order confirmations.
-
-Integration with front-end UI.
+---
+## Summary
+The Business Management System backend is a scalable, modular, and secure Spring Boot application designed to simplify business workflows — from managing accounts to processing sales orders with automated tax, validation, and soft delete mechanisms.
